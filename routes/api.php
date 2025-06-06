@@ -10,10 +10,12 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('tasks', TaskController::class);
-// Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus']);
-// Route::apiResource('posts.comments', CommentController::class);
-
+// Reģistrēšana un pieteikšanās
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');;
+
+// Šie maršruti būs pieejami tikai autentificētiem lietotājiem
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('tasks', TaskController::class); // Šis ir nepieciešams
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
